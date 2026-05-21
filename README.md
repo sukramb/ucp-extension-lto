@@ -203,7 +203,7 @@ Topics where community input is especially valued:
 
 ## Authors
 
-This extension is authored by **Markus Bruckmann** ([Heartly Apps UG](https://www.heartly.io), Leipzig, Germany) as part of an open RFC contribution to the agentic commerce ecosystem.
+This extension is authored by **Markus Böhme** ([Heartly Apps](https://www.heartly.io), Leipzig, Germany) as part of an open RFC contribution to the agentic commerce ecosystem.
 
 Contributions and feedback are welcome from anyone in the agentic commerce, e-commerce protocol, or promotional infrastructure space.
 
