@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sukramb/ucp-extension-lto/blob/main/schema/lto-extension.schema.json",
+  "title": "UCP Live-Time-Offer Extension v0.1",
+  "description": "A proposed extension to the Universal Commerce Protocol (UCP) for representing time-bounded promotional offers in a way AI agents can discover, rank, and surface to shoppers. Fills the gap left by UCP's checkout-only Discount Extension (dev.ucp.shopping.discount). Authored by Heartly (https://www.heartly.io) as a public RFC.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["offer_id", "merchant_id", "valid_from", "valid_until"],
+  "properties": {
+    "offer_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable unique identifier for this specific offer. MUST be stable across the offer's lifetime — a merchant updating the discount percentage should keep the same offer_id."
+    },
+    "merchant_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Matches UCP Merchant.id. Identifies which merchant is offering this promotion."
+    },
+    "product_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Matches UCP Product.id. Identifies which product the offer applies to. SHOULD be present for single-product offers; MAY be omitted for category-wide or storewide offers."
+    },
+    "product_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Canonical product detail page URL on the merchant store. MUST be HTTPS. Used by agents to render the offer with a link the shopper can follow."
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 datetime (UTC, with timezone designator) marking when the offer becomes active. Offers with valid_from in the future are scheduled; agents MAY surface them as upcoming but MUST NOT present them as currently active."
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 datetime (UTC, with timezone designator) marking when the offer expires. After this timestamp the offer is no longer valid; implementations SHOULD NOT return expired offers in discovery responses."
+    },
+    "original_price": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Pre-discount price, used to display savings. MUST reflect the actual price the product was sold at before the offer became active. EU implementations SHOULD ensure this is consistent with the pangv_reference_price field."
+    },
+    "sale_price": {
+      "type": "number",
+      "minimum": 0,
+      "description": "The price during the offer window. MUST be less than or equal to original_price."
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 three-letter currency code (e.g., EUR, USD, GBP, CHF)."
+    },
+    "discount_pct": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Discount percentage, 0-100. Convenience field for agents ranking offers by depth of discount. Implementations MUST derive this consistently from (original_price - sale_price) / original_price * 100."
+    },
+    "stock_remaining": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Units allocated to THIS OFFER that have not yet been sold. NOT the merchant's underlying inventory count. A merchant running a 10-unit flash sale reports 10 here regardless of whether their warehouse holds 10 or 10,000. Implementations MUST NOT expose underlying inventory via this field. null indicates the merchant does not publish stock counts."
+    },
+    "stock_capped": {
+      "type": "boolean",
+      "description": "Whether the merchant has set a hard upper limit on units sold under this offer. true means stock_remaining decrements as orders complete and reaches zero when the cap is hit. false means unlimited under the offer (the time window is the only constraint)."
+    },
+    "category": {
+      "type": ["string", "null"],
+      "maxLength": 128,
+      "description": "Top-level product category (e.g., fashion, beauty, electronics, home, food-and-beverage). Used by agents to filter by category. null when the merchant does not publish a category taxonomy."
+    },
+    "campaign_type": {
+      "type": "string",
+      "enum": [
+        "standard_flash_sale",
+        "carousel",
+        "autopilot",
+        "evergreen_promo",
+        "flash_drop",
+        "raffle_drop"
+      ],
+      "description": "The nature of the promotional event. standard_flash_sale: a time-limited discount on a single product. carousel: part of a multi-product campaign with shared timing. autopilot: AI-generated offer to clear dead stock or react to market conditions. evergreen_promo: ongoing offer with no scheduled end (still requires valid_until far in future). flash_drop: limited-quantity new-product drop. raffle_drop: probability-based access drop."
+    },
+    "urgency_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Pre-computed signals merchants emit to help agents rank and frame offers. Computing these server-side ensures consistency across implementations and reduces the cognitive load on every consumer agent.",
+      "properties": {
+        "ending_within_hours": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Hours until valid_until. 0 means the offer has effectively ended. Implementations SHOULD recompute this on every discovery response (or use ETag-based cache invalidation) to keep it accurate."
+        },
+        "stock_critical": {
+          "type": "boolean",
+          "description": "True when stock_remaining is less than 10 percent of the original offer allocation. Signals scarcity to the agent for ranking and copy generation."
+        },
+        "last_chance": {
+          "type": "boolean",
+          "description": "True when (ending_within_hours <= 2 AND stock_critical = true). The strongest urgency signal in the protocol — agents SHOULD treat last_chance offers as high-priority surface candidates."
+        }
+      }
+    },
+    "merchant_verified": {
+      "type": "boolean",
+      "description": "Whether the merchant has a verified status with the protocol authority or registry. MUST be set by the registry, NOT self-asserted by the merchant. Implementations of discovery endpoints MUST validate this field against an authoritative source before returning offers."
+    },
+    "pangv_reference_price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "valid_since"],
+      "description": "EU compliance field for PAngV §11 and Omnibus Directive 2019/2161. The 30-day-lowest-price reference that EU consumer law requires merchants to display alongside any discount claim. Required for merchants who ship to EU member states; optional otherwise.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The 30-day lowest price observed for this product, in the same currency as the offer."
+        },
+        "valid_since": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date (YYYY-MM-DD) when this reference price was first observed. Used by agents and consumers to validate compliance with PAngV §11."
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Reserved namespace for jurisdiction-specific or merchant-specific fields outside the core LTO spec. Implementations MAY add custom fields here without breaking forward compatibility. Recommended naming: vendor-prefixed (e.g., 'heartly:autopilot_rule_id')."
+    }
+  }
+}
