@@ -1,0 +1,32 @@
+{
+  "$comment": "Example 2 — WooCommerce carousel campaign. A multi-product offer where several products share a campaign window and brand. Each product gets its own LtoOffer with the same campaign_type and timing; this example shows one entry of the carousel. The carousel-level grouping is communicated implicitly via shared valid_from/valid_until and explicitly via the heartly:carousel_slug extension field.",
+  "offer_id": "wc-bettenstreit-summer-bedding-carousel-2026-05-21-product-3",
+  "merchant_id": "bettenstreit.de",
+  "product_id": "linen-duvet-cover-king-natural",
+  "product_url": "https://bettenstreit.de/produkt/linen-duvet-cover-king-natural/",
+  "valid_from": "2026-05-21T08:00:00Z",
+  "valid_until": "2026-05-24T22:00:00Z",
+  "original_price": 159.00,
+  "sale_price": 119.00,
+  "currency": "EUR",
+  "discount_pct": 25,
+  "stock_remaining": 24,
+  "stock_capped": true,
+  "category": "home",
+  "campaign_type": "carousel",
+  "urgency_flags": {
+    "ending_within_hours": 72,
+    "stock_critical": false,
+    "last_chance": false
+  },
+  "merchant_verified": true,
+  "pangv_reference_price": {
+    "amount": 159.00,
+    "valid_since": "2026-04-21"
+  },
+  "extensions": {
+    "heartly:carousel_slug": "summer-bedding-2026",
+    "heartly:carousel_position": 3,
+    "heartly:carousel_total_products": 7
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$comment": "Example 3 — AI-generated autopilot offer to clear dead stock. Demonstrates the autopilot campaign_type and the strongest urgency_flags state (last_chance = true). The vendor-prefixed 'heartly:' extension fields show how implementations can carry domain-specific metadata without breaking the core spec.",
+  "offer_id": "auto-niemands-streetwear-hoodie-deadstock-2026-05-21",
+  "merchant_id": "niemands-streetwear.de",
+  "product_id": "oversized-hoodie-forest-green-XL-SS25",
+  "product_url": "https://niemands-streetwear.de/products/oversized-hoodie-forest-green",
+  "valid_from": "2026-05-21T06:00:00Z",
+  "valid_until": "2026-05-21T13:30:00Z",
+  "original_price": 89.00,
+  "sale_price": 35.60,
+  "currency": "EUR",
+  "discount_pct": 60,
+  "stock_remaining": 2,
+  "stock_capped": true,
+  "category": "fashion",
+  "campaign_type": "autopilot",
+  "urgency_flags": {
+    "ending_within_hours": 1,
+    "stock_critical": true,
+    "last_chance": true
+  },
+  "merchant_verified": true,
+  "pangv_reference_price": {
+    "amount": 89.00,
+    "valid_since": "2026-04-21"
+  },
+  "extensions": {
+    "heartly:autopilot_rule_id": "deadstock-liquidation-v2",
+    "heartly:expected_lift_pct": 34,
+    "heartly:original_allocation": 18,
+    "heartly:units_sold": 16,
+    "heartly:auto_revert_at": "2026-05-21T13:30:00Z"
+  }
+}

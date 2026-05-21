@@ -1,0 +1,27 @@
+{
+  "$comment": "Example 1 — single-product Shopify flash sale. A 24-hour, stock-capped offer with full PAngV compliance for an EU-shipping merchant. Demonstrates the most common campaign_type (standard_flash_sale) and the minimum recommended field set for high-quality agent surfacing.",
+  "offer_id": "f4e3a2c1-shopify-klostergin-monastic-gin-2026-05-20",
+  "merchant_id": "klostergin.com",
+  "product_id": "monastic-dry-gin-10x0-04l",
+  "product_url": "https://klostergin.com/products/monastic-dry-gin-tasting-set",
+  "valid_from": "2026-05-20T19:00:00Z",
+  "valid_until": "2026-05-21T19:00:00Z",
+  "original_price": 39.90,
+  "sale_price": 29.90,
+  "currency": "EUR",
+  "discount_pct": 25,
+  "stock_remaining": 7,
+  "stock_capped": true,
+  "category": "food-and-beverage",
+  "campaign_type": "standard_flash_sale",
+  "urgency_flags": {
+    "ending_within_hours": 12,
+    "stock_critical": false,
+    "last_chance": false
+  },
+  "merchant_verified": true,
+  "pangv_reference_price": {
+    "amount": 39.90,
+    "valid_since": "2026-04-20"
+  }
+}
